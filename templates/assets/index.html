@@ -1,0 +1,248 @@
+{% extends 'base_new.html' %}
+{% load staticfiles %}
+{% block top_css %}
+    <link href="{% static 'plugins/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block page_title %}
+资产列表
+{% endblock %}
+
+{% block page_breadcrumb %}
+    <ol class="breadcrumb bread-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'asset:index' %}">资产</a></li>
+        <li class="active">资产列表</li>
+    </ol>
+    <hr class="head-hr">
+{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+    <!-- FILTER BOX -->
+    <div class="filter-box">
+        <div class="filter-box-wrap" id="asset_type">
+            <div class="filter-key">类型：</div>
+            <div class="filter-value">
+                <a href="?asset_type=server">服务器</a>
+                <a href="?asset_type=network_device">网络设备</a>
+                <a href="?asset_type=software">软件</a>
+            </div>
+        </div>
+
+        <div class="filter-box-wrap" id="manufacturer">
+            <div class="filter-key">制造商：</div>
+            <div class="filter-value">
+                <a href="?manufacturer=hp">惠普</a>
+                <a href="?manufacturer=dell">戴尔</a>
+                <a href="?manufacturer=ibm">IBM</a>
+                <a href="?manufacturer=huawei">华为</a>
+                <a href="?manufacturer=sico">思科</a>
+            </div>
+        </div>
+
+        <div class="filter-box-wrap" id="business_unit">
+            <div class="filter-key">业务线：</div>
+            <div class="filter-value">
+                <a href="?business_unit=big_data">大数据</a>
+                <a href="?business_unit=cloud_compute">云计算</a>
+                <a href="?business_unit=news">新闻</a>
+                <a href="?business_unit=video">视频</a>
+                <a href="?business_unit=shopping">购物</a>
+            </div>
+        </div>
+
+        <div class="filter-box-wrap" id="idc">
+            <div class="filter-key">IDC机房：</div>
+            <div class="filter-value">
+                <a href="?idc=szdx">深圳电信</a>
+                <a href="?idc=bjwt">北京网通</a>
+                <a href="?idc=shdx">上海电信</a>
+            </div>
+        </div>
+
+        <div class="filter-box-wrap" id="tag">
+            <div class="filter-key">TAG：</div>
+            <div class="filter-value">
+                <a href="?tag=db">数据存储</a>
+                <a href="?tag=web">网络集群</a>
+            </div>
+        </div>
+
+        <div class="filter-box-wrap" id="warranty">
+            <div class="filter-key">保修：</div>
+            <div class="filter-value">
+                <a href="?warranty=true">在保</a>
+                <a href="?warranty=false">过保</a>
+            </div>
+        </div>
+    </div>
+    <!-- END OF FILTER BOX -->
+
+    <!-- DATA TABLE -->
+    <!--Basic Toolbar-->
+    <!--===================================================-->
+    <div class="panel">
+        <div class="panel-body">
+            <table data-toggle="table"
+                   data-url="{% static 'data/bs-table' %}"
+                   data-search="true"
+                   data-show-refresh="true"
+                   data-show-toggle="true"
+                   data-show-columns="true"
+                   data-sort-name="id"
+                   data-page-list="[5, 10, 20]"
+                   data-page-size="5"
+                   data-pagination="true" data-show-pagination-switch="true">
+                <thead>
+                <tr>
+                    <th data-field="id" data-sortable="true">ID</th>
+                    <th data-field="name" data-sortable="true">Name</th>
+                    <th data-field="date" data-sortable="true" data-formatter="dateFormatter">Order date</th>
+                    <th data-field="amount" data-align="center" data-sortable="true" data-sorter="priceSorter">Balance</th>
+                    <th data-field="status" data-align="center" data-sortable="true" data-formatter="statusFormatter">Status</th>
+                    <th data-field="track" data-align="center" data-sortable="true" data-formatter="trackFormatter">Tracking Number</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!-- END OF DATA TABLE -->
+
+
+    <!-- PAGINATOR -->
+    <span class="float-left">共{{ data_list.paginator.num_pages }}页</span>
+    <span class="float-left">共{{ data_list.paginator.count }}个</span>
+    <span class="float-left">每页{{ data_list.paginator.per_page }}个</span>
+    <nav>
+        <ul class="pagination whole-pagination">
+            {% if data_list.has_previous %}
+                <li>
+                    <a href="?page={{ data_list.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">上一页</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for i in data_list.paginator.page_range %}
+                {% if data_list.number == i %}
+                    <li class="active"><a href="?page={{ i }}">{{ i }}</a></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if data_list.has_next %}
+                <li>
+                    <a href="?page={{ data_list.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">下一页</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <!-- END OF PAGINATOR -->
+    </div>
+    </div>
+
+{% endblock %}
+{% block bottom_js %}
+    <script src="{% static 'plugins/bootstrap-table/bootstrap-table.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#mainnav-menu a[href='/']").parent().removeClass('active-link');
+            $("#mainnav-menu a[href='{% url 'asset:index' %}']").parent().addClass('active-link');
+            $("#mainnav-menu a[href='{% url 'asset:index' %}']").parent().parent().parent().addClass('active-sub');
+            $("#mainnav-menu a[href='{% url 'asset:index' %}']").parent().parent().addClass('in');
+        });
+
+        Array.prototype.indexOf = function(val) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) return i;
+            }
+            return -1;
+        };
+
+        Array.prototype.remove = function(val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+            return this
+        };
+
+        (function WriteNewPageUrl() {
+            var q = location.search.substr(1); //  Get current url params
+            var argStr = '';
+            if (q){
+                var qs = q.split('&');
+                for (var i=0; i<qs.length; i++){
+                    if (!qs[i].match('page')){
+                        argStr += qs[i] + '&'
+                    }
+                }
+            }  // reformat url string
+            $(".whole-pagination a").each(function () {
+                var page_href = $(this).attr('href').substr(1);
+                var new_href = '?' + argStr + page_href;
+                $(this).attr('href', new_href);
+            });  // write new url
+        }());  // END OF WRITE PAGE URL FUNCTION
+
+        (function WriteBreadCrumbLink() {
+            var url_params = location.search.substr(1);  // get current url params
+            if (url_params){
+                var qs = url_params.split('&');  // separate params
+                    $(".filter-box-wrap").each(function () {
+                        for (var i=0; i<qs.length; i++){
+                            var argKey = qs[i].split('=')[0];
+                            var argValue = qs[i].split('=')[1];
+                        if($(this).attr('id') == argKey){
+                            var keyText = $(this).children(".filter-key").text();
+                            var argValueList = argValue.split('||');  // || indicate it is a multi selection
+                            var valueTextList = [];
+                            for (var j=0; j<argValueList.length; j++){  // use each argValue to find the related text
+                                var p = $(this).children().find('a');
+                                for(var k=0; k<p.length; k++){
+                                    if ($(p[k]).attr('href').match(qs[i])){
+                                        valueTextList.push($(p[k]).text());
+                                    }
+                                }
+                            }
+                            var valueText = valueTextList.join('，'); // gather all the value text
+                            var tmpList = url_params.split('&').remove(qs[i]);  // generate a new href to the breadcrumb
+                            var cp = tmpList.join('&');
+                            if(cp){
+                                var crumbHtml = "<li><a class='filter-set' href='?" + cp + "'><b>" +
+                                                 keyText + "</b>" + "<em>" + valueText +"</em><i class='fa fa-close'></i></a></li>";
+                            }
+                            else {
+                                crumbHtml = "<li><a class='filter-set' href='" + {% url 'asset:index' %} + "'><b>"
+                                             + keyText + "</b>" + "<em>" + valueText +"</em><i class='fa fa-close'></i></a></li>";
+                            } // need to check
+                            $(".breadcrumb").append(crumbHtml);
+                            $(this).remove();
+                        }
+                    }
+                })
+            }
+        }()); // END OF WRITE CRUMB LINK
+
+        (function UpdateFilterLink() {
+            var url_params = location.search;
+            if (url_params){
+                $(".filter-box a").each(function () {
+                    var filter_href = $(this).attr('href').substr(1);
+                    var new_href = url_params + '&' + filter_href;
+                    $(this).attr('href', new_href);
+                })
+            }
+        }())
+
+    </script>
+
+    {% block assets_bottom_js %}
+    {% endblock %}
+{% endblock %}

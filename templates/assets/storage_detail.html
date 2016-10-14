@@ -1,0 +1,63 @@
+{% extends 'assets/asset_detail.html' %}
+{% block tab_asset_info %}
+    <!--Tab Asset Info-->
+    <div id="tab-asset-info" class="tab-pane fade active in">
+        <table class=" asset-info-table container" style="margin-left:0;">
+            <tr>
+                <td class="col-md-2 bold">名称</td>
+                <td class="col-md-4">: {{ asset_obj.name }}</td>
+                <td class="col-md-2 bold">SN</td>
+                <td class="col-md-4">: {{ asset_obj.sn }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">类型</td>
+                <td class="col-md-4">: {{ asset_obj.storage.get_storage_type_display }}</td>
+                <td class="col-md-2 bold">接口/插槽类型</td>
+                <td class="col-md-4">: {{ asset_obj.storage.interface_type }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">型号</td>
+                <td class="col-md-4">: {{ asset_obj.storage.model }}</td>
+                <td class="col-md-2 bold">容量(GB)</td>
+                <td class="col-md-4">: {{ asset_obj.storage.capacity }}</td>
+            </tr>
+            {% if asset_obj.storage.storage_type != 'nas' %}
+                <tr>
+                    <td class="col-md-2 bold">使用在</td>
+                    <td class="col-md-4">: {{ asset_obj.storage.find_usage.asset }}</td>
+                    <td class="col-md-2 bold">插槽</td>
+                    <td class="col-md-4">: {{ asset_obj.storage.find_usage.slot }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="col-md-2 bold">IDC</td>
+                    <td class="col-md-4">: {{ asset_obj.idc }}</td>
+                    <td class="col-md-2 bold">业务线</td>
+                    <td class="col-md-4">: {{ asset_obj.business_unit }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="col-md-2 bold">购买日期</td>
+                <td class="col-md-4">: {{ asset_obj.trade_date }}</td>
+                <td class="col-md-2 bold">状态</td>
+                <td class="col-md-4">: <span class="badge badge-success">在用</span></td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">过保日期</td>
+                <td class="col-md-4">: {{ asset_obj.expire_date}}</td>
+                <td class="col-md-2 bold">管理员</td>
+                <td class="col-md-4">: {{ asset_obj.admin }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">资产创建日期</td>
+                <td class="col-md-4">: {{ asset_obj.create_date}}</td>
+                <td class="col-md-2 bold">最近更新日期</td>
+                <td class="col-md-4">: {{ asset_obj.update_date }}</td>
+            </tr>
+        </table>
+    </div>
+    <!--End of Tab Asset Info-->
+
+{% endblock %}
+{% block tab_detail_info %}
+{% endblock %}

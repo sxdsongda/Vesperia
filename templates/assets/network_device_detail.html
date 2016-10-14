@@ -1,0 +1,79 @@
+{% extends 'assets/asset_detail.html' %}
+{% block tab_asset_info %}
+    <!--Tab Asset Info-->
+    <div id="tab-asset-info" class="tab-pane fade active in">
+        <table class=" asset-info-table container" style="margin-left:0;">
+            <tr>
+                <td class="col-md-2 bold">名称</td>
+                <td class="col-md-4">: {{ asset_obj.name }}</td>
+                <td class="col-md-2 bold">SN</td>
+                <td class="col-md-4">: {{ asset_obj.sn }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">类型</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.get_device_type_display }}</td>
+                <td class="col-md-2 bold">Manage_ip</td>
+                <td class="col-md-4">: {{ asset_obj.manage_ip }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">型号</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.model }}</td>
+                <td class="col-md-2 bold">厂商</td>
+                <td class="col-md-4">: {{ asset_obj.manufacturer.manufacturer }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">端口数量</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.port_num }}</td>
+                <td class="col-md-2 bold">固件</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.firmware }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">MAC地址</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.macaddress }}</td>
+                <td class="col-md-2 bold">Vlan_IP</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.vlan_ip }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">资产Tags</td>
+                <td class="col-md-4">:
+                    {% for tag in asset_obj.tags.select_related %}
+                        <span class="badge badge-purple">{{ tag.name}}</span>
+                    {% endfor %}
+                </td>
+                <td class="col-md-2 bold">内网IP</td>
+                <td class="col-md-4">: {{ asset_obj.networkdevice.intranet_ip }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">IDC</td>
+                <td class="col-md-4">: {{ asset_obj.idc }}</td>
+                <td class="col-md-2 bold">所属业务线</td>
+                <td class="col-md-4">: {{ asset_obj.business_unit }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">购买日期</td>
+                <td class="col-md-4">: {{ asset_obj.trade_date }}</td>
+                <td class="col-md-2 bold">状态</td>
+                <td class="col-md-4">: <span class="badge badge-success">在用</span></td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">过保日期</td>
+                <td class="col-md-4">: {{ asset_obj.expire_date}}</td>
+                <td class="col-md-2 bold">管理员</td>
+                <td class="col-md-4">: {{ asset_obj.admin }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">资产创建日期</td>
+                <td class="col-md-4">: {{ asset_obj.create_date}}</td>
+                <td class="col-md-2 bold">最近更新日期</td>
+                <td class="col-md-4">: {{ asset_obj.update_date }}</td>
+            </tr>
+        </table>
+    </div>
+    <!--End of Tab Asset Info-->
+{% endblock %}
+{% block tab_detail_info %}
+    <div id="tab-detail-info" class="tab-pane fade">
+    <p>设备详细设置</p>
+    {{ asset_obj.networkdevice.device_detail }}
+    </div>
+{% endblock %}

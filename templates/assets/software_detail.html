@@ -1,0 +1,48 @@
+{% extends 'assets/asset_detail.html' %}
+{% block tab_asset_info %}
+    <!--Tab Asset Info-->
+    <div id="tab-asset-info" class="tab-pane fade active in">
+        <table class=" asset-info-table container" style="margin-left:0;">
+            <tr>
+                <td class="col-md-2 bold">软件名称</td>
+                <td class="col-md-4">: {{ asset_obj.name }}</td>
+                <td class="col-md-2 bold">软件类型</td>
+                <td class="col-md-4">: {{ asset_obj.software.get_type_display }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">版本</td>
+                <td class="col-md-4">: {{ asset_obj.software.version }}</td>
+                <td class="col-md-2 bold">SN</td>
+                <td class="col-md-4">: {{ asset_obj.sn }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">运行平台</td>
+                <td class="col-md-4">: {{ asset_obj.software.get_platform_display }}</td>
+                <td class="col-md-2 bold">语言</td>
+                <td class="col-md-4">: {{ asset_obj.software.get_language_display }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">购买日期</td>
+                <td class="col-md-4">: {{ asset_obj.trade_date }}</td>
+                <td class="col-md-2 bold">状态</td>
+                <td class="col-md-4">: <span class="badge badge-success">在用</span></td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">过保日期</td>
+                <td class="col-md-4">: {{ asset_obj.expire_date}}</td>
+                <td class="col-md-2 bold">管理员</td>
+                <td class="col-md-4">: {{ asset_obj.admin }}</td>
+            </tr>
+            <tr>
+                <td class="col-md-2 bold">资产创建日期</td>
+                <td class="col-md-4">: {{ asset_obj.create_date}}</td>
+                <td class="col-md-2 bold">最近更新日期</td>
+                <td class="col-md-4">: {{ asset_obj.update_date }}</td>
+            </tr>
+        </table>
+    </div>
+    <!--End of Tab Asset Info-->
+{% endblock %}
+
+{% block tab_detail_info %}
+{% endblock %}

@@ -1,0 +1,130 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        // $("#container").removeClass("mainnav-lg").addClass("mainnav-sm");
+        $("#asset-data").DataTable({
+            responsive: true,
+            language: CONSTANT.DATA_TABLE.DEFAULT_OPTION.language
+        });
+        $(".filter-value input[type='checkbox']").attr('checked', false);
+        $(".filter-extra-multiple").click(function () {
+            $(this).parent().parent().addClass("multiple");
+            $(this).parent().parent().siblings().removeClass('multiple');
+            $(this).parent().prev().find('input:checked').attr('checked', false);
+            $(this).parent().prev().find('a.btn-confirm').addClass('disabled');
+        });
+        $(".filter-box-wrap .btn-cancel").click(function () {
+            $(this).parent().parent().parent().removeClass("multiple");
+            $(this).parent().prev().find('input:checked').attr('checked',false);
+        });
+        $(".filter-box-wrap input[type='checkbox']").click(function () {
+            if ($(this).is(':checked')){
+                $(this).parent().parent().parent().next().children('a.btn-confirm').removeClass('disabled');
+            }
+            else if($(this).parent().parent().parent().find('input:checked').length==0){
+                $(this).parent().parent().parent().next().children('a.btn-confirm').addClass('disabled');
+            }
+        });
+        $(".filter-box-wrap .btn-confirm").click(function () {
+            var value_list = [];
+            var b = $(this).parent().prev().find('input:checked');
+            var key= $(b).attr('name');
+            for(var i=0; i<b.length; i++){
+                value_list.push($(b[i]).val())
+            }
+            var value = value_list.join('||');
+            var argStr = GetUrlParamsStrWithoutPage();
+            if (location.search){ // we don't know whether current location contains page like 'page=1'
+                location.href = '?' + argStr + key + '=' + value;
+            }
+            else {
+                location.href = '?' + key + '=' + value;
+            }
+        });
+    });
+
+    Array.prototype.indexOf = function(val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function(val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+        return this
+    };
+
+    (function WriteBreadCrumbLink() {
+        var argStr = GetUrlParamsStrWithoutPage();
+        if (argStr){
+            var qs = argStr.substring(0, argStr.length-1).split('&');  // separate params
+            $(".filter-box-wrap").each(function () {
+                for (var i=0; i<qs.length; i++){
+                    var argKey = qs[i].split('=')[0];
+                    var argValue = qs[i].split('=')[1];
+                    if($(this).attr('id') == argKey){
+                        var keyText = $(this).children(".filter-key").text();
+                        var argValueList = argValue.split('||');  // || indicate it is a multi selection
+                        var valueTextList = [];
+                        for (var j=0; j<argValueList.length; j++){  // use each argValue to find the related text
+                            var p = $(this).children().find('a');
+                            for(var k=0; k<p.length; k++){
+                                if ($(p[k]).attr('href').match(argKey+'='+argValueList[j])){
+                                    valueTextList.push($(p[k]).children('span').text());
+                                }
+                            }
+                        }
+                        var valueText = valueTextList.join('，'); // gather all the value text
+                        var tmpList = argStr.substring(0, argStr.length-1).split('&').remove(qs[i]);  // generate a new href to the breadcrumb
+                        var cp = tmpList.join('&');
+                        if(cp){
+                            var crumbHtml = "<li><a class='filter-set' href='?" + cp + "'><b>" +
+                                    keyText + "</b>" + "<em>" + valueText +"</em><i class='fa fa-close'></i></a></li>";
+                        }
+                        else {
+                            crumbHtml = "<li><a class='filter-set' href='" + {% url 'asset:index' %} + "'><b>"
+                                    + keyText + "</b>" + "<em>" + valueText +"</em><i class='fa fa-close'></i></a></li>";
+                        } // need to check
+                        $(".breadcrumb").append(crumbHtml);
+                        $(this).remove();
+                    }
+                }
+            })
+        }
+    }()); // END OF WRITE CRUMB LINK
+
+    (function UpdateFilterLink() {
+        var argStr = GetUrlParamsStrWithoutPage();
+        $(".filter-value a.link-check").each(function () {
+            var filter_href = $(this).attr('href').substr(1);
+            var new_href = '?' + argStr + filter_href;
+            $(this).attr('href', new_href);
+        })
+    }()); // END OF UPDATE FILTER LINK
+
+    (function UpdatePageLink() {
+        var argStr = GetUrlParamsStrWithoutPage();
+        $(".whole-pagination a").each(function () {
+            var page_href = $(this).attr('href').substr(1);
+            var new_href = '?' + argStr +  page_href;
+            $(this).attr('href', new_href);
+        });  // write new url
+    }());  // END OF WRITE PAGE URL FUNCTION
+
+    function GetUrlParamsStrWithoutPage() {
+        var q = location.search.substr(1); //  Get current url params
+        var argStr = '';
+        if (q){
+            var qs = q.split('&');
+            for (var i=0; i<qs.length; i++){
+                if (!qs[i].match('page')){
+                    argStr += qs[i] + '&';  // reformat url string
+                }
+            }
+        }
+        return argStr;  // it will return either '' or 'a=b&c=d&', which will be helpful to update the page and filter link
+    } // END OF GET URL PARAMS WITHOUT PAGE
+</script>

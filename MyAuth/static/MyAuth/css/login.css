@@ -1,0 +1,95 @@
+body{
+    background-color: #eeeeee;
+    padding-top: 40px;
+}
+
+body input{
+}
+.container{
+    width: 1170px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.login-form {
+    width: 330px;
+    margin: 0 auto;
+}
+
+.login-form .control-group {
+    margin-bottom: 15px;
+    position: relative; }
+
+.login-form .login-field {
+    border-color: transparent;
+    font-size: 17px;
+    padding-bottom: 11px;
+    padding-top: 11px;
+    text-indent: 5px;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.login-form .login-field:focus + .login-field-icon {
+    color: #1abc9c;
+}
+
+.login-form .login-field:focus{
+    border: 2px solid #1abc9c;
+}
+
+.login-form .login-field-icon {
+    color: #bfc9ca;
+    font-size: 20px;
+    position: absolute;
+    right: 13px;
+    top: 14px;
+}
+
+.login-link {
+    color: #bfc9ca;
+    display: block;
+    font-size: 13px;
+    margin-top: 15px;
+    text-align: center; }
+
+.btn{
+    width: 100%;
+    display: block;
+    border: none;
+    border-radius: 6px;
+}
+.btn:active{
+    box-shadow: none;
+}
+.btn:active:hover{
+    box-shadow: none;
+}
+
+.btn-primary{
+    background-color: #1abc9c;
+}
+.btn-primary:hover{
+    background-color: #2fe2bf;
+}
+.btn-primary:active:hover{
+    background-color: #1abc9c;
+}
+.btn-primary:active{
+    background-color: #1abc9c;
+}
+.btn-primary:focus{
+    background-color: #1abc9c;
+}
+
+.login-link{
+    margin: 15px auto;
+}
+a[class='login-link']{
+    color: #bfc9ca;
+    text-decoration: underline;
+}
+a[class='login-link']:hover {
+    color: #1abc9c;
+    text-decoration: none;
+}

@@ -1,0 +1,21 @@
+{% extends 'hosts/index.html' %}
+
+{% block right_content %}
+  {% csrf_token %}
+  {% include 'hosts/host_list_component.html' %}
+  <div class="col-xs-7 col-md-8 col-lg-9">
+    <h3>批量命令</h3>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <textarea name="cmd" class="form-control" rows="3" placeholder="请输入要执行的命令..." id="cmd-textarea"></textarea>
+        <br>
+        <button class="button button-action" onclick="SubmitTask('multi_cmd')">提交</button>
+      </div>
+    </div>
+    {% include 'hosts/task_result_component.html' %}
+  </div>
+{% endblock %}
+
+{% block hosts_bottom_js %}
+  {% include 'hosts/multi_task_js_component.html' %}
+{% endblock %}

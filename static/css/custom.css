@@ -1,0 +1,440 @@
+body, #content-container{
+    background-color: #ffffff;
+}
+.well{
+    background-color: #fbfbfb;
+}
+.filter-box {
+    margin-bottom: 10px;
+}
+.filter-box li{
+    display: inline-block;
+    margin-right: 30px;
+}
+.filter-box ul{
+    padding-left:0;
+    padding-right: 0;
+    margin-bottom: 0;
+}
+.filter-box-wrap{
+    position: relative;
+    height: auto;
+    line-height: 34px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.filter-key {
+    float: left;
+    width: 100px;
+    font-weight: 400;
+    padding-left: 10px;
+}
+.filter-value {
+    background-color: #ffffff;
+    margin-left: 90px;
+    padding-left: 10px;
+    padding-right: 130px;
+}
+.filter-value a{
+    color: #0c80df;
+}
+.filter-value a:hover{
+    color: orangered;
+}
+
+.filter-box .filter-btn{
+    display: none;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.filter-box .multiple{
+    border: 2px solid #edd28b;
+    margin-top: -1px;
+    background-color: #fffedd;
+}
+.filter-box .multiple .filter-key{
+    padding-left: 8px;
+}
+.filter-box .multiple .filter-btn{
+    display: block;
+}
+.filter-box .multiple .filter-btn .disabled{
+    cursor: default;
+    opacity: 0.2;
+    box-shadow: none;
+}
+.filter-box .multiple .magic-checkbox+label{
+    display: inline-block;
+}
+.filter-box .multiple span{
+    display: none;
+}
+.filter-extra{
+    position: absolute;
+    right: 8px;
+    top: 0;
+}
+.filter-box .filter-extra .filter-extra-more, .filter-extra-multiple {
+    float: right;
+    margin-right: 20px;
+    position: relative;
+    height:auto;
+}
+.filter-box .filter-extra a:hover{
+    color: orangered;
+}
+
+.filter-set{
+    position: relative;
+    line-height: 22px;
+    display: inline-block;
+    border: 1px solid #ddd;
+    padding: 0 26px 0 4px;
+}
+
+.filter-set:hover {
+    border-color: orangered;
+}
+.filter-set:hover i{
+    color: orangered;
+}
+
+.filter-set b{
+    font-weight: normal;
+    color: #777;
+}
+
+.filter-set em{
+    color: orangered;
+    font-style: normal;
+}
+.filter-set i{
+    font-weight: normal;
+    display: block;
+    position: absolute;
+    width: 25px;
+    height: 22px;
+    right: -6px;
+    top: 5px;
+}
+
+.bread-nav{
+    line-height:24px;
+}
+
+.head-hr{
+    width: 98%;
+    margin-bottom: 0;
+    margin-top:0;
+    border-color: #e0e0e0;
+    align-self: center;
+}
+
+@keyframes hover-color {
+    from {
+        border-color:#e0e0e0
+    }
+    to {
+        /*border-color:#42a5f5*/
+        border-color:orangered;
+        background-color: #ffffff;
+    }
+}
+@keyframes hover-color2 {
+    from {
+        border-color:#e0e0e0
+    }
+    to {
+        border-color:#42a5f5;
+        /*border-color:orangered;*/
+        background-color: #ffffff;
+    }
+}
+.magic-radio,.magic-checkbox {
+    position:absolute;
+    display:none
+}
+.magic-radio+label,.magic-checkbox+label {
+    position:relative;
+    display:none;
+    cursor:pointer;
+    vertical-align:middle;
+    margin-top:0;
+    margin-bottom: 0;
+}
+.magic-radio+label:hover:before,.magic-checkbox+label:hover:before {
+    animation-duration:.4s;
+    animation-fill-mode:both;
+    animation-name:hover-color
+}
+.magic-radio+label:before,.magic-checkbox+label:before {
+    position:absolute;
+    top: 9px;
+    left:0;
+    display:inline-block;
+    width:16px;
+    height:16px;
+    content:'';
+    border:1px solid #c8c8c8
+}
+.magic-radio+label:after,.magic-checkbox+label:after {
+    position:absolute;
+    display:none;
+    content:''
+}
+.magic-radio+label {
+    min-width:16px;
+    min-height:16px
+}
+.magic-radio+label:not(:empty) {
+    padding-left:21px!important
+}
+.magic-checkbox+label {
+    min-width:16px;
+    min-height:16px
+}
+.magic-checkbox+label:not(:empty) {
+    padding-left:21px!important;
+}
+.magic-radio:checked+label:before,.magic-checkbox:checked+label:before {
+    animation-name:none
+}
+.magic-radio:checked+label:after,.magic-checkbox:checked+label:after {
+    display:block
+}
+.magic-radio+label:before {
+    border-radius:50%;
+    left:-.01em
+}
+.magic-radio+label:after {
+    top:2.5px;
+    left:2.5px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#42a5f5
+}
+.magic-radio:checked+label:before {
+    border:1px solid #42a5f5
+}
+.magic-checkbox+label:before {
+    border-radius:0
+}
+.magic-checkbox+label:after {
+    top:10px;
+    left:5px;
+    box-sizing:border-box;
+    width:6px;
+    height:12px;
+    transform:rotate(45deg);
+    border-width:2px;
+    border-style:solid;
+    border-color: #ffffff;
+    border-top:0;
+    border-left:0
+}
+.magic-checkbox:checked+label:before {
+    border:orangered;
+    background: orangered;
+}
+
+.solo-checkbox{
+    display:none
+}
+.solo-checkbox +label{
+    position:relative;
+    display:block;
+    cursor:pointer;
+    vertical-align:middle;
+    min-width:16px;
+    min-height:16px;
+    margin-top:0;
+    margin-bottom: 0;
+}
+.solo-checkbox +label:hover:before{
+    animation-duration:.4s;
+    animation-fill-mode:both;
+    animation-name:hover-color2
+}
+.solo-checkbox + label:before{
+    position:relative;
+    display:inline-block;
+    width:16px;
+    height:16px;
+    content:'';
+    border-radius: 0;
+    border:1px solid #c8c8c8
+
+}
+.solo-checkbox + label:after{
+    position:absolute;
+    display:none;
+    content:'';
+}
+.solo-checkbox:checked +label:before{
+    animation-name: none;
+}
+.solo-checkbox +label:after{
+    top: 1px;
+    left:5px;
+    box-sizing:border-box;
+    width:6px;
+    height:12px;
+    transform:rotate(45deg);
+    border-width:2px;
+    border-style:solid;
+    border-color: #ffffff;
+    border-top:0;
+    border-left:0
+}
+.solo-checkbox:checked+label:before {
+    border:#42a5f5;
+    background: #42a5f5;
+}
+.solo-checkbox:checked+label:after {
+    display: block;
+}
+
+.table a{
+    color: #0c80df;
+    text-decoration: underline;
+}
+
+.table a:hover{
+    color: orangered;
+}
+
+.form-horizontal .form-btn{
+    text-align: center;
+}
+.form-horizontal .form-control, .control-group .form-control{
+    width: auto;
+}
+.errorlist{
+    list-style-type: none;
+    padding: 7px 0 0 0;
+    margin-bottom: 5px;
+    color: red;
+}
+.help-text{
+    padding: 7px 0 0 0;
+    margin-bottom: 5px;
+}
+
+/* spin遮罩层 */
+.overlay{
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+    position: absolute;
+    z-index: 1;
+	background: white;
+	filter: alpha(opacity = 60);
+	opacity: .6;
+}
+/* dataTable行点击*/
+tbody tr.active td{
+    background-color: #42A5F5 !important;
+    color: #ffffff;
+}
+tbody tr.active .solo-checkbox+label:before{
+    background-color: #ffffff;
+}
+tbody tr.active .solo-checkbox+label:after{
+    border-color: #42a5f5;
+}
+tbody tr.active .solo-checkbox:checked+label:after{
+    display: block;
+}
+tbody tr.active a{
+    color: #ffffff !important;
+}
+tbody tr.active a:hover{
+    color: orangered !important;
+}
+/* End dataTable行点击*/
+
+/* 表格操作栏按钮居中 */
+.table .td-operation {
+	text-align : center;
+}
+
+/* 利用col-md-x的水平排列信息 */
+.info-content .prop-name {
+	float: left;
+	padding:5px 0 0 0;
+	width: 80px;
+	text-align: right;
+	font-weight: bold;
+}
+.info-content .prop-value {
+	padding-top:5px;
+	margin-left:90px;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+/* End 利用col-md-x的水平排列信息 */
+
+/*不用col-sm-x的水平排列输入框*/
+.info-content .control-group {
+	display:inline-block;
+	*display:inline;
+	*zoom:1;
+    margin-bottom: 5px;
+    vertical-align: middle;
+}
+
+.info-content .control-group .control-label{
+	float: left;
+	padding:5px 0 0 0;
+	width: 80px;
+	text-align: right;
+	font-weight: bold;
+}
+
+.info-content .control-group .controls {
+	margin-left:90px;
+}
+
+.info-content .control-group .controls .form-control{
+    display: inline-block;
+}
+
+.info-content .control-group .controls input,.info-content .control-group .controls textarea{
+    width: 200px;
+}
+.info-content .control-group .controls select{
+	width:200px;
+}
+.info-content .control-group .controls input.xlarge{
+	width:480px;
+	*width:476px;
+}
+.info-content .control-group .controls input.xxlarge{
+	width:774px;
+	*width:766px;
+}
+.info-content .control-group .controls input.xxxlarge{
+	width:1068px;
+	*width:1056px;
+}
+.info-content .control-group .controls .jq-dropdown-panel{
+	width:178px;
+	overflow:auto;
+	max-height:300px;
+}
+/*End 不用col-md-x的水平排列输入框*/
+
+.panel-grey .panel-heading{
+    background-color: #f6f6f6;
+    color: inherit;
+}
+
+.panel-control{
+    float: left;
+}
+pre {
+white-space: pre-wrap;
+word-wrap: break-word;
+}

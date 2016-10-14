@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block left_sidebar %}
+  <ul class="nav nav-sidebar">
+    <li><a href="{% url 'host:index' %}">主机</a></li>
+    <li><a href="{% url 'host:multi_cmd' %}">批量命令</a></li>
+    <li><a href="{% url 'host:multi_file_transfer' %}">文件分发</a></li>
+    <li><a href="#">任务计划</a></li>
+    <li><a href="#">审计</a></li>
+  </ul>
+{% endblock %}
+
+{% block right_content %}
+
+  <h3>主机列表</h3>
+  {% for group in request.user.hostgroup_set.all.prefetch_related %}
+    <div class="panel-group" id="accordion-{{ group.id }}" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading-{{ group.id }}">
+          <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion-{{ group.id }}" href="#collapse-{{ group.id }}" aria-expanded="false" aria-controls="collapse-{{ group.id }}">
+              <span><i class="fa fa-navicon"></i></span><span style="padding-left:25px;"> {{ group.name }}</span>
+            </a>
+          </h4>
+        </div>
+        <div id="collapse-{{ group.id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{ group.id }}">
+          <div class="panel-body">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Hostname</th>
+                <th>Ip_addr</th>
+                <th>port</th>
+                <th>system_type</th>
+                <th>idc</th>
+                <th>enabled</th>
+                <th>action</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for bound_host in group.bound_hosts.all.select_related %}
+                <tr>
+                  <th scope="row">{{ bound_host.host.id }}</th>
+                  <td>{{ bound_host.host.hostname }}</td>
+                  <td>{{ bound_host.host.ip_addr }}</td>
+                  <td>{{ bound_host.host.port }}</td>
+                  <td>{{ bound_host.host.system_type }}</td>
+                  <td>{{ bound_host.host.idc }}</td>
+                  <td>{{ bound_host.host.enabled }}</td>
+                  <td><a host-id="{{ bound_host.host.id }}" class="button button-primary button-small" href="#">Login</a></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block bottom_js %}
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#navbar a[href='{% url 'host:index' %}']").parent().addClass('active');
+      $("#navbar a[href='{% url 'host:index' %}']").parent().siblings().removeClass('active');
+      $(".nav-sidebar a[href='{{ request.path }}']").parent().addClass("active")
+    });
+  </script>
+
+  {% block hosts_bottom_js %}
+  {% endblock %}
+{% endblock %}
+

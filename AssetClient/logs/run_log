@@ -1,0 +1,63 @@
+Y-09-07 17:52:19	ERROR	auth_failed	Invalid username or token_id
+Y-09-07 17:54:39	ERROR	auth_failed	Invalid username or token_id
+Y-09-07 18:23:09	ERROR	auth_failed	Invalid username or token_id
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item slot should be unicode
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item slot should be unicode
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item capacity should be float
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item capacity should be float
+Y-09-07 18:31:07	ERROR	MandatoryCheckFailed	disk sub item capacity should be float
+Y-09-07 18:43:31	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	nic sub item macaddress not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item capacity not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item capacity not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item model not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	ram sub item model not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item capacity not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item capacity not provided
+Y-09-07 18:46:51	ERROR	MandatoryCheckFailed	disk sub item capacity not provided
+Y-09-07 18:48:06	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 19:02:42	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 22:57:56	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:04:23	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:31:46	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:33:15	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:33:47	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:34:26	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:36:45	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:37:27	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-07 23:38:51	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-08 00:30:39	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 14:01:32	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 14:02:06	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:02:04	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:06:33	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:07:15	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:09:27	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:11:22	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-09 15:12:34	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-11 01:28:08	ERROR	MandatoryCheckFailed	disk sub item slot should be unicode
+2016-09-11 01:28:08	ERROR	MandatoryCheckFailed	disk sub item slot should be unicode
+2016-09-11 01:28:08	ERROR	MandatoryCheckFailed	disk sub item slot not provided
+2016-09-11 01:28:08	ERROR	nic	[u'Invalid IPv4 or IPv6 address']
+2016-09-11 01:28:08	ERROR	nic	[u'Invalid IPv4 or IPv6 address']
+2016-09-11 01:36:23	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-11 01:38:55	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-11 01:50:05	ERROR	AssetCreateFailed	AssetNameOrSerialNumberAlreadyExist
+2016-09-11 01:51:42	INFO	AssetSendToApprovalZone	It needs IT admins to approval
+2016-09-11 02:29:22	INFO	AssetComponentUpdated	Asset [id:21 name:BFEBFBFF000106E5] component [21:slot:3 capacity:119.0] field [manufacturer] has changed from [Plextor] to [(\u6807\u51c6\u78c1\u76d8\u9a71\u52a8\u5668)]
+2016-09-11 02:29:22	INFO	NewAssetComponentAdded	Asset [id:21 name:BFEBFBFF000106E5] has added new component [21:slot:3 capacity:119]
+2016-09-11 02:29:22	INFO	AssetComponentDelete	Asset [id:21 name:BFEBFBFF000106E5] component [21:slot:0 capacity:931.0] is not found in client's reporting data, assume it has been removed or replaced, delete it from DB
+2016-09-11 02:29:22	INFO	AssetComponentDelete	Asset [id:21 name:BFEBFBFF000106E5] component [21:slot:3 capacity:119.0] is not found in client's reporting data, assume it has been removed or replaced, delete it from DB
+2016-09-11 02:29:22	INFO	NewAssetComponentAdded	Asset [id:21 name:BFEBFBFF000106E5] has added new component [21:slot:3 capacity:119]
+2016-09-11 02:29:22	INFO	NewAssetComponentAdded	Asset [id:21 name:BFEBFBFF000106E5] has added new component [21:slot:0 capacity:931]
+2016-09-11 02:35:35	INFO	AssetComponentUpdated	Asset [id:21 name:BFEBFBFF000106E5] component [21:sn:5VP6B8R8 capacity:931] field [capacity] has changed from [1000.0] to [931]
+2016-09-11 02:35:35	INFO	AssetComponentUpdated	Asset [id:21 name:BFEBFBFF000106E5] component [21:sn:5VP6B8R8 capacity:931] field [iface_type] has changed from [SCSI] to [ATA]
+2016-09-11 02:38:39	INFO	AssetComponentUpdated	Asset [id:21 name:BFEBFBFF000106E5] component [Disk:sn:5VP6B8R8 capacity:931.0 slot:0] field [manufacturer] has changed from [SEAGATE] to [(标准磁盘驱动器)]
+2016-09-13 00:07:12	ERROR	MandatoryCheckFailed	raid_adaptor not provided
+2016-09-13 00:09:45	ERROR	MandatoryCheckFailed	raid_adaptor not provided

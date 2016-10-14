@@ -1,0 +1,341 @@
+{% extends 'assets/index_v2.html' %}
+{% block page_title %}
+    服务器
+{% endblock %}
+
+{% load staticfiles %}
+{% block top_css %}
+    <link href="{% static 'plugins/DataTables-1.10.12/media/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/DataTables-1.10.12/extensions/Responsive/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'%}" rel="stylesheet">
+    <link href="{% static 'css/select2_custom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block page_breadcrumb %}
+    <ol class="breadcrumb bread-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'asset:index' %}">资产</a></li>
+        <li class="active">资产管理</li>
+        <li class="active">服务器</li>
+    </ol>
+    <hr class="head-hr">
+{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            {% if request.user.is_admin %}
+
+                <!-- SEARCH BOX -->
+                <!--===================================================-->
+                <div class="row" style="padding:0 7.5px;">
+                    <div class="input-group form-group pull-right" style="width: 250px;">
+                        <input type="text" class="form-control" placeholder="模糊查询" id="fuzzy-search">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" id="btn-simple-search"><i class="fa fa-search"></i></button>
+                        <button class="btn btn-default" title="高级查询" data-toggle="collapse" id="toggle-advanced-search" data-target="#div-advanced-search" aria-expanded="false" aria-controls="div-advanced-search">
+                            <i class="fa fa-angle-double-down"></i>
+                        </button>
+                        </span>
+                    </div>
+                    {% block head-left-button %}
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#batch-config-view" id="btn-batch-config-toggle">批量修改<i class="fa fa-angle-double-down"></i></button>
+                    {% endblock %}
+                </div>
+                <div class="collapse" id="div-advanced-search">
+                    <div class="well info-content">
+                        <form id="advanced-search-form">
+                            {% for field in search_form.form %}
+                                <div class="control-group">
+                                    <label for="{{ field.auto_id }}" class="control-label">{{ field.label }}：</label>
+                                    <div class="controls">
+                                        {{ field }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="control-group">
+                                <button type="button" class="btn btn-primary" id="btn-advanced-search"><i class="fa fa-search"></i>查询</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- END OF SEARCH BOX -->
+
+                <!-- BATCH ASSET CONFIG VIEW PANEL-->
+                <!--===================================================-->
+                {% block batch-config-view %}
+                <div class="collapse" id="batch-config-view">
+                    <div class="panel-group accordion" >
+                        <div class="panel panel-grey">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a>批量修改</a>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="block-content info-content" >
+                                    <div class="row">
+                                        <form id="batch-config-form">
+                                            {% csrf_token %}
+                                            {% for field in batch_config_form %}
+                                                <div class="control-group">
+                                                    <label for="{{ field.auto_id }}" class="control-label">{{ field.label }}：</label>
+                                                    <div class="controls">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="control-group">
+                                                <button type="button" class="btn btn-primary" disabled id="btn-batch-config-confirm"><i class="fa fa-info"></i>确认修改</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock batch-config-view %}
+                <!-- END OF BATCH ASSET CONFIG VIEW PANEL-->
+
+                <!-- ASSET INFO PANEL -->
+                <!--===================================================-->
+                <div class="panel-group accordion" id="info-panel">
+                    <div class="panel panel-grey">
+
+                        <!-- Accordion title -->
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a id="panel-title" data-parent="#info-panel" data-toggle="collapse" href="#info-panel-body-container">资产详情</a>
+                            </h3>
+                        </div>
+
+                        <!-- Accordion content -->
+                        <div class="panel-collapse collapse in" id="info-panel-body-container">
+                            <div class="panel-body">
+
+                                <!-- ASSET INFO VIEW-->
+                                <!--===================================================-->
+                                <div class="block-content info-content clearfix" id="asset-info-view">
+                                    {% block asset-info-view %}
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">编号ID:</label>
+                                            <div class="prop-value" id="id-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">名称:</label>
+                                            <div class="prop-value" id="name-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">SN:</label>
+                                            <div class="prop-value" id="sn-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">IDC:</label>
+                                            <div class="prop-value" id="idc-view"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">业务线:</label>
+                                            <div class="prop-value" id="business-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">管理员:</label>
+                                            <div class="prop-value" id="admin-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">型号:</label>
+                                            <div class="prop-value" id="server-model-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">网卡IP:</label>
+                                            <div class="prop-value" id="nic-ip-view"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">购买日期:</label>
+                                            <div class="prop-value" id="trade-date-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">过保日期:</label>
+                                            <div class="prop-value" id="expire-date-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">制造商:</label>
+                                            <div class="prop-value" id="manufacturer-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">管理IP:</label>
+                                            <div class="prop-value" id="manage-ip-view"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">CPU数:</label>
+                                            <div class="prop-value" id="cpu-count-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">CPU核数:</label>
+                                            <div class="prop-value" id="cpu-core-count-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">价格:</label>
+                                            <div class="prop-value" id="price-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">合同:</label>
+                                            <div class="prop-value" id="contract-view"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">CPU型号:</label>
+                                            <div class="prop-value" id="cpu-model-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">内存大小(MB):</label>
+                                            <div class="prop-value" id="ram-size-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">硬盘大小(GB):</label>
+                                            <div class="prop-value" id="disk-size-view"></div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="prop-name">TAGS:</label>
+                                            <div class="prop-value" id="tags-view"></div>
+                                        </div>
+                                    </div>
+                                    {% endblock asset-info-view %}
+                                </div>
+                                <!-- END OF ASSET INFO VIEW-->
+
+                                <!-- ASSET EDIT VIEW-->
+                                <!--===================================================-->
+                                {% block asset_edit_view %}
+                                <div class="block-content info-content" style="display: none" id="asset-edit-view">
+                                    <div class="row">
+                                        <form id="asset-edit-form">
+                                            {% csrf_token %}
+                                            {% for field in config_form %}
+                                                <div class="control-group">
+                                                    <label for="{{ field.auto_id }}" class="control-label">{{ field.label }}：</label>
+                                                    <div class="controls">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="control-group">
+                                                <button type="button" class="btn btn-primary" id="btn-asset-edit-confirm"><i class="fa fa-info"></i>确认修改</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endblock %}
+                                <!-- END OF ASSET EDIT VIEW-->
+
+                                <!-- ASSET ADD VIEW-->
+                                <!--===================================================-->
+                                {% block asset_add_view %}
+                                {% endblock %}
+                                <!-- END OF ASSET ADD VIEW-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF ASSET INFO PANEL -->
+
+                <!-- DATA TABLE -->
+                <!--===================================================-->
+                {% block data_table %}
+                <div class="row">
+                    <div class="col-md-12" id="div-table-container">
+                        <table id="asset-dataTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" name="check-all" title="全选" class="solo-checkbox"><label for="check-all"></label></th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>SN</th>
+                                <th>IDC</th>
+                                <th>业务线</th>
+                                <th>管理员</th>
+                                <th>管理IP</th>
+                                <th>TAG</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th><input type="checkbox" name="check-all" title="全选" class="solo-checkbox"><label for="check-all"></label></th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>SN</th>
+                                <th>IDC</th>
+                                <th>业务线</th>
+                                <th>管理员</th>
+                                <th>管理IP</th>
+                                <th>TAG</th>
+                                <th>操作</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                {% endblock data_table %}
+                <!--===================================================-->
+                <!-- END OF DATA TABLE -->
+            {% else %}
+                只有管理员才有权限访问此页面
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom_js %}
+    <script src="{% static 'plugins/DataTables-1.10.12/media/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/DataTables-1.10.12/media/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/DataTables-1.10.12/extensions/Responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/DataTables-1.10.12/extensions/Responsive/js/responsive.bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}" ></script>
+    <script src="{% static 'plugins/select2/dist/js/select2.min.js' %}" ></script>
+    <script src="{% static 'js/jquery.spin.merge.js' %}"></script>
+    <!-- lhgdialog -->
+    <script src="/static/plugins/lhgdialog-4.2.0/lhgdialog.js?skin=bootstrap2"></script>
+    <script src="{% static 'js/form-json-serializer.js' %}"></script>
+    <script src="{% static 'js/constant.js' %}" ></script>
+    <script src="{% static 'js/asset-datatable.js' %}" ></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#mainnav-menu a[href='/']").parent().removeClass('active-link');
+            $("#mainnav-menu a[href='{% url 'asset:index' %}']").parent().parent().parent().addClass('active-sub');
+            $("#mainnav-menu a[href='{% url 'asset:index' %}']").parent().parent().addClass('in');
+            $(".select-single").select2();
+            $(".select-multiple").select2({
+                maximumSelectionLength: 2
+            });
+
+            $('.form-datetime').datetimepicker({
+                minView: "month",
+                language: 'zh-CN',
+                autoclose:true,
+                format: 'yyyy-mm-dd',
+                todayBtn: true
+            })
+        });
+    </script>
+    {% block asset_bottom_js %}
+        <script type="text/javascript">
+            (function () {
+                $("#mainnav-menu a[href='{% url 'asset:server' %}']").parent().addClass('active-link');
+                $("#mainnav-menu a[href='{% url 'asset:server' %}']").parent().parent().addClass('in');
+            }())
+        </script>
+    {% endblock %}
+{% endblock %}

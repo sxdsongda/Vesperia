@@ -1,0 +1,188 @@
+{% extends 'hosts/index.html' %}
+{% block top_css %}
+  <link href="/static/plugins/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
+
+{% endblock %}
+{% block right_content %}
+  {% csrf_token %}
+{% include 'hosts/host_list_component.html' %}
+  <div class="col-xs-7 col-md-8 col-lg-9">
+    <h3>文件分发</h3>
+    <div class="panel panel-default">
+      <div class="panel-body">
+
+        <select id="file_transfer_type" class="selectpicker" title="选择任务类型">
+          <option value="file_send">分发文件到客户端</option>
+          <option value="file_get">从客户端下载文件</option>
+        </select>
+
+        <input id="file-upload" type="file" name="file" multiple>
+        <br>
+        <div class="input-group form-group">
+          <span class="input-group-addon" id="basic-addon">远程主机路径</span>
+          <input id="remote-path" type="text" class="form-control" placeholder="必须输入绝对路径,不要包含文件名"
+                 aria-describedby="basic-addon" name="remote_path">
+        </div>
+        <button class="button button-action" onclick="SubmitTask('multi_file_transfer')">开始任务</button>
+      </div>
+    </div>
+    {% include 'hosts/task_result_component.html' %}
+  </div>
+{% endblock %}
+{% block hosts_bottom_js %}
+<script src="/static/plugins/bootstrap-fileinput/js/plugins/canvas-to-blob.min.js" type="text/javascript"></script>
+<script src="/static/plugins/bootstrap-fileinput/js/plugins/sortable.min.js" type="text/javascript"></script>
+<script src="/static/plugins/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/static/plugins/bootstrap-fileinput/js/themes/fa.js"></script>
+<script src="/static/plugins/bootstrap-fileinput/js/locales/zh_custom.js"></script>
+  <script type="text/javascript">
+    var upload_response;
+    $(document).ready(function () {
+      $("#file-upload").fileinput({
+        //这个uploadUrl最好是填的,默认为null,填了之后可以支持ajax_upload,例如拖拽,删除选择等功能就是靠设定了这个才能实现,另外这里通过js初始化了
+        //fileinput之后,不要再到<input>里面加样式,否则有可能覆盖掉这里的选项,例如拖拽功能可以实现是因为这里设置了uploadUrl,自动就变成了可以拖拽的样式了
+        //但是如果给他再加了样式,就会被加的样式覆盖掉,如果加的样式不对,那么就没拖拽功能了,例如class='file'
+        uploadUrl: "{% url 'host:file_upload' %}",
+        // 这里uploadAsync是异步并发上传,默认是为true,这里改成false是为了一次性上传,因为服务器端要把每次上传的文件单独放在一个随机数文件夹里面避免被意外处理掉,
+        //但是异步模式下,每次服务器只能接收到一个文件,然后就会给这个文件就会单独生成一个文件夹,而不是把所有要上传的文件统一放在一个随机数目录下,这样一来就不好再让他们在一个目录下了
+        //会生成太多的随机目录,另外事件的处理也不一样了,fileuploaded,filebatchuploadsuccess,filebatchuploadcomplete分别是针对多个文件某个上传完成,多个文件全部同步上传完成
+        //和多个文件全部异步上传完成,明显,fileuploaded,filebatchuploadcomplete是针对uploadAsync为true的情况,filebatchuploadsuccess是针对uploadAsync为false的情况
+        uploadAsync: false,
+        maxFileCount: 10,
+        maxFileSize: 5000,
+        language:'zh'
+      });
+      /*
+      这下面的file-upload.on('fileloaded', function)是说某个文件在页面预览处加载好了,并不是上传了,这个时候还没有发起上传的请求
+      这里留下这一段为了明显的和后面做比较,加载console.log有两次,但同步上传只会有一个console.log
+       */
+      $('#file-upload').on('fileloaded', function(event, file, previewId, index, reader) {
+        console.log("fileloaded");
+      });
+      /*
+      这个fileuploaded事件才是真的上传完成了的事件,这个对我们有用,因为这里有来自服务器端的返回值,就在data里面,上传文件都比较特殊,服务器端需要生成随机数目录来避免
+      上传的文件发生被覆盖,被别的操作意外删掉等,但是这里我们用filebatchuploadsuccess,因为需要同步上传
+      $('#input-id').on('fileuploaded', function(event, data, previewId, index) {
+        var form = data.form, files = data.files, extra = data.extra,
+            response = data.response, reader = data.reader;
+        console.log('File uploaded triggered');
+      });
+       */
+      $('#file-upload').on('filebatchuploadsuccess', function(event, data, previewId, index) {
+        var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+        console.log('File batch upload success');
+        console.log(response);
+        upload_response = response;
+        // 这里有点小问题,如果上传全部完成了之后用户点分发文件之前, 还能不能允许用户再上传,如果允许,那么就会再生成一个随机数目录,里面存了新的所有的文件,不是我的初衷,但暂时不写禁止的功能
+        // 为了给程序留出扩展,我们都用列表来存随机数目录,这样以后如果哪天要改回uploadAsync为true,可以不用改那么多东西.这里,同步的response本来就是个列表,所以可以直接用
+        // 如果要改成异步,那么upload_response要声明成[], 然后这里用upload_response.push(response), 所以这里最好是能有一个判断
+      });
+
+      $('#file_transfer_type').change(function () {
+        if ($(this).val() != 'file_send'){
+          $('.file-input').hide()
+        }
+        else {
+          $('.file-input').show()
+        }
+      }); // end of task_type change
+
+    })
+
+  </script>
+  {% include 'hosts/multi_task_js_component.html' %}
+{% endblock %}
+
+
+<!-- fileloaded
+
+This event is triggered after a file is loaded in the preview. Additional parameters available are:
+
+    file: the file object instance
+
+    previewId: the identifier for the preview file container
+
+    index: the zero-based sequential index of the loaded file in the preview list
+
+    reader: the FileReader instance if available.
+
+    --!>
+
+<!-- fileuploaded
+
+This event is triggered only for ajax uploads and after upload is completed for each thumbnail file. This event is triggered ONLY for ajax uploads and in the following scenarios:
+
+    When the upload icon in each preview thumbnail is clicked and file is uploaded successfully, OR
+
+    When you have uploadAsync set to true and you have triggered batch upload. In this case, the fileuploaded event is triggered after every individual selected file is uploaded successfully.
+
+The additional parameters available with this eventare:
+
+    data: This is a data object (associative array) that sends the following information, whose keys are:
+
+        form: the FormData object which is passed via XHR2 (or empty object if not available).
+
+        files: the file stack array (or empty object if not available).
+
+        extra: the uploadExtraData settings for the plugin (or empty object if not available).
+
+        response: the data sent via ajax response (or empty object if not available).
+
+        reader: the FileReader instance if available.
+        jqXHR: the jQuery XMLHttpRequest object used for this transaction (if available).
+
+    previewId: the identifier of each file's parent thumbnail div element in the preview window.
+
+    index: the zero-based index of the file in the file stack.
+
+    $('#input-id').on('fileuploaded', function(event, data, previewId, index) {
+        var form = data.form, files = data.files, extra = data.extra,
+            response = data.response, reader = data.reader;
+        console.log('File uploaded triggered');
+    });
+-->
+
+<!--
+filebatchuploadsuccess
+
+This event is triggered only for ajax uploads and after a successful synchronous batch upload. This event is triggered ONLY for ajax uploads and in the following scenario:
+
+    When you have uploadAsync set to false and you have triggered batch upload. In this case, the filebatchuploadsuccess event is triggered after all files have been successfully uploaded.
+
+The additional parameters available with this event are:
+
+    data: This is a data object (associative array) that sends the following information, whose keys are:
+
+        form: the FormData object which is passed via XHR2 (or empty object if not available).
+
+        files: the file stack array (or empty object if not available).
+
+        extra: the uploadExtraData settings for the plugin (or empty object if not available).
+
+        response: the data sent via ajax response (or empty object if not available).
+
+        reader: the FileReader instance if available.
+        jqXHR: the jQuery XMLHttpRequest object used for this transaction (if available).
+
+    $('#input-id').on('filebatchuploadsuccess', function(event, data, previewId, index) {
+        var form = data.form, files = data.files, extra = data.extra,
+            response = data.response, reader = data.reader;
+        console.log('File batch upload success');
+    });
+
+filebatchuploadcomplete
+
+This event is triggered only for ajax uploads and after completion of either the synchronous OR asynchronous ajax batch upload. Additional parameters available are:
+
+    files: the file stack array (or empty object if not available).
+
+    extra: the uploadExtraData settings for the plugin (or empty object if not available).
+
+    $('#input-id').on('filebatchuploadcomplete', function(event, files, extra) {
+        console.log('File batch upload complete');
+    });
+
+
+
+--!>

@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>欢迎,请登陆</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/font-awesome.css" rel="stylesheet">
+    <link href="{% static 'MyAuth/css/login.css' %}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <form class="login-form" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+        <h3 class="">Please login</h3>
+        <div class="control-group">
+          <input id="inputEmail" class="login-field" placeholder="Email address" name="username" required="" autofocus="" type="text">
+          <label for="inputEmail" class="login-field-icon fa fa-user"></label>
+        </div>
+        <div class="control-group">
+          <input id="inputPassword" class="login-field" placeholder="Password" required="" name="password" type="password">
+          <label for="inputPassword" class="login-field-icon fa fa-lock"></label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input value="remember-me" type="checkbox"> Remember me
+          </label>
+        </div>
+        {% if login_err %}
+          <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong>
+            {{ login_err }}
+          </div>
+        {% endif %}
+        <button class="btn btn-lg btn-block btn-primary" type="submit">Login</button>
+        <a class="login-link" href="#" >Lost your password?</a>
+      </form>
+    </div> <!-- /container -->
+
+
+    <script type="text/javascript">
+
+    </script>
+</body></html>

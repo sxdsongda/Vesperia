@@ -1,0 +1,118 @@
+<script type="text/javascript">
+
+  function CheckAllToggle(ele) {
+    if (ele.checked){
+      $("#list-group-" + $(ele).attr("data")).children().children("input").prop("checked", true)
+    }
+    else {
+      $("#list-group-" + $(ele).attr("data")).children().children("input").prop("checked", false)
+    }
+  } // end CheckAllToggle
+
+  function SubmitTask(task_type) {
+    // 这里需要判断task_type是什么,并且每种task_type都需要post, 都有各自的错误类型,那为了避免重复代码,post就应该是在if判断task_type之外
+    // 统一执行, 并且是发现如果有错误就把错误贴到页面上去, 贴错误这个动作也应该是在判断类型之后, 所以用到一个err_list是最好不过的了, 如果没有错误就执行post
+    var err_list = [];
+    var data_dic = {};
+    var selected_hosts = VerifyHostSelection();
+    if (selected_hosts.length == 0){
+      err_list.push('验证失败,未选择任何主机');   // err_list.push(['验证失败',"未选择任何主机"])
+    }
+    data_dic['selected_hosts'] = selected_hosts;
+    data_dic['csrfmiddlewaretoken'] = $("input[name=csrfmiddlewaretoken]").val();
+
+    // 接下来判断任务类型,完成字典,如果有错误则放入错误消息到列表里
+    if (task_type == 'multi_cmd') {
+      var cmd_text = $.trim($("#cmd-textarea").val());
+      data_dic['task_type'] = task_type;
+      data_dic['task_content'] = cmd_text;
+      if (cmd_text.length == 0) {
+        err_list.push('验证失败,未输入有效命令')
+      }
+    }
+    else if (task_type == 'multi_file_transfer'){
+      var file_transfer_dic = {};
+      var file_transfer_type = $('#file_transfer_type').val();
+      data_dic['task_type'] = file_transfer_type;
+      var remote_path = $.trim($('#remote-path').val());
+      if (remote_path.length == 0){
+        err_list.push('验证失败,未输入有效远程主机路径')
+      }
+      file_transfer_dic['remote_path'] = remote_path;
+      if (file_transfer_type == 'file_send'){
+        if (upload_response.length == 0){   // 这个upload_response 来自于服务器对于上传完成后的返回,这里返回了一个上传文件地址的列表(地址只包含随机数和文件名)
+          err_list.push('验证失败,还未上传任何文件到中转机')
+        }
+        file_transfer_dic['upload_response'] = upload_response;
+      }
+      data_dic['task_content'] = JSON.stringify(file_transfer_dic)
+    } // end task_type if
+
+    if (err_list.length > 0){
+      $("#status_box").html("");
+      $.each(err_list, function (index, ele) {
+        console.log(ele);
+        var err_html = "<div class='alert alert-danger alert-dismissible' role='alert'>" +
+                "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                "<span aria-hidden='true'>&times;</span></button>" +
+                "<strong>Warning!</strong>" + ele + "</div>";
+        $("#status_box").append(err_html)
+      }); // end each err_list
+    }
+    else {
+      $.post("{% url 'host:submit_task' %}", data_dic, function(callback){
+        console.log(callback);
+        $("#status_box").html("");
+        var submit_success_html = "<div class='alert alert-success alert-dismissible' role='alert'>" +
+                "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                "<span aria-hidden='true'>&times;</span></button>" +
+                "<strong>Success!</strong>" + "提交命令成功,请等待执行" + "</div>";
+        $("#status_box").append(submit_success_html);
+        callback = JSON.parse(callback);
+        RefreshGetResult(callback.task_id);
+      }); // end post
+    }
+  }
+
+  function VerifyHostSelection() {
+    var selected_hosts = [];
+    var host_inputs = $("input[title='选择主机']");
+    $.each(host_inputs, function (index, ele) {
+      if (ele.checked){
+        selected_hosts.push($(ele).val())
+      }
+    }); //end each
+    return selected_hosts
+  } // end VerifyHostSelection
+
+  function RefreshGetResult(task_id) {
+    GetResult(task_id);
+    GetTaskResultInterval = setInterval(function(){GetResult(task_id);}, 15000);
+  } // end refresh
+
+  function GetResult(task_id) {
+    $.getJSON("{% url 'host:get_task_result' %}", {task_id: task_id}, function(callback){
+      PrintOnPage(callback);
+    }); // end ajax .get
+  }// end function Get Result
+
+  function PrintOnPage(result_list) {
+    $("#result-box").html("");
+    $.each(result_list, function (index, ele) {
+      if (ele.result_status == 'unknown'){
+        var status = 'info'
+      }
+      else if (ele.result_status == 'success'){
+        status = 'success'
+      }
+      else if (ele.result_status == 'failed'){
+        status = 'warning'
+      }
+      var res_html = "<div class='panel panel-" + status + "'><div class='panel-heading'><h4 class='panel-title'>" +
+              ele.bound_host__host__hostname + "---" + ele.bound_host__host__ip_addr + "---" +
+              ele.bound_host__host_user__username + "---" + ele.date + "---" + ele.result_status + "</h4></div>" +
+              "<div class='panel-body'><pre>" +ele.result_content + "</pre></div></div>";
+      $("#result-box").append(res_html)
+    })
+  }
+</script>

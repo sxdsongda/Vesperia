@@ -1,0 +1,190 @@
+{% extends 'assets/server.html' %}
+{% block page_title %}
+    软件
+{% endblock %}
+
+{% block page_breadcrumb %}
+    <ol class="breadcrumb bread-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'asset:index' %}">资产</a></li>
+        <li class="active">资产管理</li>
+        <li class="active">软件</li>
+    </ol>
+    <hr class="head-hr">
+{% endblock %}
+
+{% block head-left-button %}
+    <button class="btn btn-primary" id="btn-add"><i class="fa fa-plus"></i>新增</button>
+{% endblock %}
+
+{% block batch-config-view %}
+{% endblock %}
+
+{% block asset-info-view %}
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="prop-name">编号ID:</label>
+            <div class="prop-value" id="id-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">名称:</label>
+            <div class="prop-value" id="name-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">SN:</label>
+            <div class="prop-value" id="sn-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">管理员:</label>
+            <div class="prop-value" id="admin-view"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="prop-name">软件类型:</label>
+            <div class="prop-value" id="software-type-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">版本:</label>
+            <div class="prop-value" id="version-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">运行平台:</label>
+            <div class="prop-value" id="platform-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">语言:</label>
+            <div class="prop-value" id="language-view"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="prop-name">价格:</label>
+            <div class="prop-value" id="price-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">软件厂商:</label>
+            <div class="prop-value" id="manufacturer-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">购买日期:</label>
+            <div class="prop-value" id="trade-date-view"></div>
+        </div>
+        <div class="col-sm-3">
+            <label class="prop-name">过保日期:</label>
+            <div class="prop-value" id="expire-date-view"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="prop-name">合同:</label>
+            <div class="prop-value" id="contract-view"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block asset_edit_view %}
+    <div class="block-content info-content" style="display: none" id="asset-edit-view">
+        <div class="row">
+            <form id="asset-edit-form">
+                {% csrf_token %}
+                {% for field in asset_software_form %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}：</label>
+                        <div class="controls">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for field in software_form %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}：</label>
+                        <div class="controls">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="control-group">
+                    <button type="button" class="btn btn-primary" id="btn-asset-edit-confirm"><i class="fa fa-info"></i>确认修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block asset_add_view %}
+    <div class="block-content info-content" style="display: none" id="asset-add-view">
+        <div class="row">
+            <form id="asset-add-form">
+                {% csrf_token %}
+                {% for field in asset_software_form %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}：</label>
+                        <div class="controls">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for field in software_form %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}：</label>
+                        <div class="controls">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="control-group">
+                    <button type="button" class="btn btn-primary" id="btn-asset-add-confirm"><i class="fa fa-info"></i>确认新增</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block data_table %}
+    <div class="row">
+        <div class="col-md-12" id="div-table-container">
+            <table id="asset-dataTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" name="check-all" title="全选" class="solo-checkbox"><label for="check-all"></label></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>SN</th>
+                    <th>软件类型</th>
+                    <th>版本</th>
+                    <th>运行平台</th>
+                    <th>语言</th>
+                    <th>管理员</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                <tr>
+                    <th><input type="checkbox" name="check-all" title="全选" class="solo-checkbox"><label for="check-all"></label></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>SN</th>
+                    <th>软件类型</th>
+                    <th>版本</th>
+                    <th>运行平台</th>
+                    <th>语言</th>
+                    <th>管理员</th>
+                    <th>操作</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block asset_bottom_js %}
+    <script type="text/javascript">
+        (function () {
+            $("#mainnav-menu a[href='{% url 'asset:software' %}']").parent().addClass('active-link');
+            $("#mainnav-menu a[href='{% url 'asset:software' %}']").parent().parent().addClass('in');
+        }())
+    </script>
+{% endblock %}
+

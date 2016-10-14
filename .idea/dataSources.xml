@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="4081420948">
+    <data-source source="LOCAL" name="Sqlite (Xerial) - db.sqlite3" uuid="4b569637-e9b6-47bb-bb6d-46e41df09177">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/PycharmProjects/Vesperia/db.sqlite3</jdbc-url>
+    </data-source>
+  </component>
+</project>

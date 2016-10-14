@@ -1,0 +1,471 @@
+{% extends 'assets/index_v2.html' %}
+{% load custom_tag %}
+{% load staticfiles %}
+{% block top_css %}
+    <link href="{% static 'plugins/DataTables-1.10.12/media/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'%}" rel="stylesheet">
+{% endblock %}
+{% block page_title %}
+    {% if not error %}
+        资产ID:{{ asset_obj.id  }}|{{ asset_obj.name }}
+    {% else %}
+        资产不存在！
+    {% endif %}
+{% endblock %}
+
+{% block page_breadcrumb %}
+    <ol class="breadcrumb bread-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'asset:index' %}">资产</a></li>
+        <li class="active">资产列表</li>
+        {% if not error %}
+            <li class="active">{{ asset_obj.id  }}</li>
+        {% else %}
+            <li class="active">资产不存在!</li>
+        {% endif %}
+    </ol>
+    <hr class="head-hr">
+{% endblock %}
+
+{% block page_content %}
+    {% if not error %}
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            {% if form.errors or second_form.errors %}
+                <div class="alert alert-danger">
+                    <button class="close" data-dismiss="alert"><i class="pci-cross pci-circle"></i></button>
+                    <strong>表单验证失败，请更改后重新提交!</strong>
+                </div>
+            {% endif %}
+
+            <!--Asset Panel-->
+            <div class="panel panel-bordered panel-primary">
+
+                <!--Panel heading-->
+                <div class="panel-heading">
+                    <div class="panel-control" style="float: none;">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a aria-expanded="true" data-toggle="tab" href="#tab-asset-info">资产信息</a></li>
+                            {% if asset_obj.asset_type != 'software' and asset_obj.asset_type != 'storage' %}
+                                <li><a aria-expanded="false" data-toggle="tab" href="#tab-detail-info">详细信息</a></li>
+                            {% endif %}
+                            <li><a aria-expanded="false" data-toggle="tab" href="#tab-event-record">变更记录</a></li>
+                            <li><a aria-expanded="false" data-toggle="tab" href="#tab-contract-info">合同/财务</a></li>
+                            <li><a aria-expanded="false" data-toggle="tab" href="#tab-config">配置</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!--End of Panel heading-->
+
+                <!--Panel body-->
+                <div class="panel-body">
+
+                    <!--Tabs content-->
+                    <div class="tab-content">
+
+                        {% block tab_asset_info %}
+                        <!--Tab Asset Info-->
+                            <div id="tab-asset-info" class="tab-pane fade active in">
+                                <table class=" asset-info-table container" style="margin-left:0;">
+                                    <tr>
+                                        <td class="col-md-2 bold">资产类型</td>
+                                        <td class="col-md-4">: {{ asset_obj.get_asset_type_display }}</td>
+                                        <td class="col-md-2 bold">SN</td>
+                                        <td class="col-md-4">: {{ asset_obj.sn }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">厂商</td>
+                                        <td class="col-md-4">: {{ asset_obj.manufacturer.manufacturer }}</td>
+                                        <td class="col-md-2 bold">型号</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">IDC</td>
+                                        <td class="col-md-4">: {{ asset_obj.idc }}</td>
+                                        <td class="col-md-2 bold">所属业务线</td>
+                                        <td class="col-md-4">: {{ asset_obj.business_unit }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">OS类型</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.os_type }}</td>
+                                        <td class="col-md-2 bold">管理IP</td>
+                                        <td class="col-md-4">: {{ asset_obj.manage_ip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">业务IP</td>
+                                        <td class="col-md-4">:
+                                            {% for nic in asset_obj.nic_set.select_related  %}
+                                                {% if nic.ipaddress %}
+                                                    {{ nic.ipaddress }} |
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-md-2 bold">MAC Address</td>
+                                        <td class="col-md-4">:
+                                            {% for nic in asset_obj.nic_set.select_related  %}
+                                                {% if nic.macaddress %}
+                                                    {{ nic.macaddress }} |
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">OS Distribution</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.os_distribution }} </td>
+                                        <td class="col-md-2 bold">OS Release Version</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.os_release}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">CPU型号</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_model }}</td>
+                                        <td class="col-md-2 bold">CPU颗数</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_count }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">CPU核数</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_core_count }}</td>
+                                        <td class="col-md-2 bold">状态</td>
+                                        <td class="col-md-4">: <span class="badge badge-success">在用</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">总硬盘大小(GB)</td>
+                                        <td class="col-md-4">: {{ asset_obj.disk_set.select_related | sum_size }}</td>
+                                        <td class="col-md-2 bold">总内存(MB)</td>
+                                        <td class="col-md-4">: {{ asset_obj.ram_set.select_related | sum_size }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">资产Tags</td>
+                                        <td class="col-md-4">:
+                                            {% for tag in asset_obj.tags.select_related %}
+                                                <span class="badge badge-purple">{{ tag.name}}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="col-md-2 bold">购买日期</td>
+                                        <td class="col-md-4">: {{ asset_obj.trade_date }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">过保日期</td>
+                                        <td class="col-md-4">: {{ asset_obj.expire_date}}</td>
+                                        <td class="col-md-2 bold">管理员</td>
+                                        <td class="col-md-4">: {{ asset_obj.admin }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">资产创建日期</td>
+                                        <td class="col-md-4">: {{ asset_obj.create_date}}</td>
+                                        <td class="col-md-2 bold">最近更新日期</td>
+                                        <td class="col-md-4">: {{ asset_obj.update_date }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!--End of Tab Asset Info-->
+                        {% endblock tab_asset_info %}
+
+                        {% block tab_detail_info %}
+                            <!--Tab Detail Info-->
+                            <div id="tab-detail-info" class="tab-pane fade">
+                                <h4>基础信息</h4>
+                                <table class=" asset-info-table container" style="margin-left:0;">
+                                    <tr>
+                                        <td class="col-md-2 bold">Name</td>
+                                        <td class="col-md-4">: {{ asset_obj.name }}</td>
+                                        <td class="col-md-2 bold">OS</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.os_distribution }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">SN</td>
+                                        <td class="col-md-4">: {{ asset_obj.sn }}</td>
+                                        <td class="col-md-2 bold">OS Version</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.os_release }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">Model</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.model }}</td>
+                                        <td class="col-md-2 bold">信息来源</td>
+                                        <td class="col-md-4">: {{ asset_obj.server.created_by }}</td>
+                                    </tr>
+                                </table>
+                                <hr/>
+
+                                <h4>CPU</h4>
+                                <table class=" asset-info-table container" style="margin-left:0;">
+                                    <tr>
+                                        <td class="col-md-2 bold">CPU型号</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_model }}</td>
+                                        <td class="col-md-2 bold">物理CPU个数</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_count }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-md-2 bold">CPU核数</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.cpu_core_count }}</td>
+                                        <td class="col-md-2 bold">最近更新日期</td>
+                                        <td class="col-md-4">: {{ asset_obj.cpu.update_date }}</td>
+                                    </tr>
+                                </table>
+                                <hr/>
+
+                                <h4>内存</h4>
+                                <table class=" asset-info-table container" style="margin-left:0;">
+                                    <tr>
+                                        <td class="col-md-2 bold">总内存大小(MB)</td>
+                                        <td class="col-md-4">: {{ asset_obj.ram_set.select_related | sum_size }}</td>
+                                        <td class="col-md-2 bold">内存条数</td>
+                                        <td class="col-md-4">:  {{ asset_obj.ram_set.select_related.count }}</td>
+                                    </tr>
+                                </table>
+                                <table class="table asset-info-table container" style="margin-left:0;">
+                                    <thead>
+                                    <tr>
+                                        <th>插槽</th>
+                                        <th>容量(MB)</th>
+                                        <th>型号</th>
+                                        <th>SN</th>
+                                        <th>汇报日期</th>
+                                        <th>最近变更</th>
+                                    </tr>
+                                    </thead>
+                                    {% for ram in asset_obj.ram_set.select_related %}
+                                        <tr>
+                                            <td>{{ ram.slot }}</td>
+                                            <td>{{ ram.capacity}}</td>
+                                            <td>{{ ram.model }}</td>
+                                            <td>{{ ram.sn}}</td>
+                                            <td>{{ ram.create_date}}</td>
+                                            <td>{{ ram.update_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+
+                                <h4>硬盘</h4>
+                                <table class=" asset-info-table container" style="margin-left:0;">
+                                    <tr>
+                                        <td class="col-md-2 bold">总硬盘大小(GB)</td>
+                                        <td class="col-md-4">: {{ asset_obj.disk_set.select_related | sum_size }}</td>
+                                        <td class="col-md-2 bold">硬盘块数</td>
+                                        <td class="col-md-4">:  {{ asset_obj.disk_set.select_related.count }}</td>
+                                    </tr>
+                                </table>
+                                <table class="table asset-info-table container" style="margin-left:0;">
+                                    <thead>
+                                    <tr>
+                                        <th>插槽</th>
+                                        <th>容量(GB)</th>
+                                        <th>接口型号</th>
+                                        <th>厂商</th>
+                                        <th>SN</th>
+                                        <th>汇报日期</th>
+                                        <th>最近变更</th>
+                                    </tr>
+                                    </thead>
+                                    {% for disk in asset_obj.disk_set.select_related %}
+                                        <tr>
+                                            <td>{{ disk.slot }}</td>
+                                            <td>{{ disk.capacity}}</td>
+                                            <td>{{ disk.get_iface_type_display }}</td>
+                                            <td>{{ disk.manufacturer }}</td>
+                                            <td>{{ disk.sn}}</td>
+                                            <td>{{ disk.create_date}}</td>
+                                            <td>{{ disk.update_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+
+                                <h4>网卡</h4>
+                                <table class="table asset-info-table container" style="margin-left:0;">
+                                    <thead>
+                                    <tr>
+                                        <th>网卡名</th>
+                                        <th>IP Addr</th>
+                                        <th>MAC</th>
+                                        <th>Network</th>
+                                        <th>是否Bonding</th>
+                                        <th>汇报日期</th>
+                                        <th>最近变更</th>
+                                    </tr>
+                                    </thead>
+                                    {% for nic in asset_obj.nic_set.select_related %}
+                                        <tr>
+                                            <td>{{ nic.name }}</td>
+                                            <td>{{ nic.ipaddress}}</td>
+                                            <td>{{ nic.macaddress }}</td>
+                                            <td>{{ nic.network}}</td>
+                                            <td>{{ nic.bonding}}</td>
+                                            <td>{{ nic.create_date}}</td>
+                                            <td>{{ nic.update_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            <!--End of Tab Detail Info-->
+                        {% endblock tab_detail_info %}
+
+                        <!-- Tab Event Record-->
+                        <div id="tab-event-record" class="tab-pane fade">
+                            <table id="event_log_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>事件ID</th>
+                                    <th>事件类型</th>
+                                    <th>名称</th>
+                                    <th>涉及对象</th>
+                                    <th>详情</th>
+                                    <th>事件触发用户</th>
+                                    <th>日期</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for event in asset_obj.eventlog_set.select_related %}
+                                        <tr>
+                                            <td>{{ event.id }}</td>
+                                            <td>{{ event.get_event_type_display }}</td>
+                                            <td>{{ event.name }}</td>
+                                            <td>{{ event.component }}</td>
+                                            <td>{{ event.detail }}</td>
+                                            <td>{{ event.user }}</td>
+                                            <td>{{ event.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--End of Tab Event Record-->
+
+                        <!--Tab Contract Info-->
+                        <div id="tab-contract-info" class="tab-pane fade">
+                            <table class=" asset-info-table container" style="margin-left:0;">
+                                <tr>
+                                    <td class="col-md-2 bold">所属合同</td>
+                                    <td class="col-md-4">:  {{ asset_obj.contract }}</td>
+                                    <td class="col-md-2 bold">价格(RMB)</td>
+                                    <td class="col-md-4">: {{ asset_obj.price }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-2 bold">合同号</td>
+                                    <td class="col-md-4">:  {{ asset_obj.contract.sn }}</td>
+                                    <td class="col-md-2 bold">License数量 </td>
+                                    <td class="col-md-4">: {{ asset_obj.contract.license_num}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-2 bold">购买日期</td>
+                                    <td class="col-md-4">:  {{ asset_obj.trade_date }}</td>
+                                    <td class="col-md-2 bold">过保日期</td>
+                                    <td class="col-md-4">: {{ asset_obj.expire_date}}</td>
+                                </tr>
+                            </table>
+                            <hr>
+                            <p>合同详情</p>
+                            {{ asset_obj.contract.detail }}
+                        </div>
+                        <!--End of Tab Contract Info-->
+
+                        <!--Tab Config-->
+                        <div id="tab-config" class="tab-pane fade">
+                            {% if request.user.is_admin %}
+                                <form method="post" action="" class="form-horizontal">
+                                {% csrf_token %}
+                                    {% for field in form %}
+                                        <div class="field-wrapper">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="{{ field.id_for_label }}">{{ field.label }}：</label>
+                                                <div class="col-sm-2">
+                                                    {{ field }}
+                                                </div>
+                                                {% if field.errors %}
+                                                    <div class="col-sm-2">
+                                                        {{ field.errors }}
+                                                    </div>
+                                                {% elif field.help_text %}
+                                                    <div class="col-sm-2 help-text">
+                                                        {{ field.help_text | safe }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    {% if second_form %}
+                                        <hr>
+                                    {% endif %}
+                                    {% for field in second_form %}
+                                        <div class="field-wrapper">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label" for="{{ field.id_for_label }}">{{ field.label }}：</label>
+                                                <div class="col-sm-2">
+                                                    {{ field }}
+                                                </div>
+                                                {% if field.errors %}
+                                                    <div class="col-sm-2">
+                                                        {{ field.errors }}
+                                                    </div>
+                                                {% elif field.help_text %}
+                                                    <div class="col-sm-2 help-text">
+                                                        {{ field.help_text | safe }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <div class="form-btn">
+                                        <input class="btn btn-primary btn-confirm " type="submit" value="提交更改">
+                                        <a class="btn btn-default btn-cancel" href="">取消</a>
+                                    </div>
+                                </form>
+                            {% else %}
+                                只有管理员有权限修改资产信息
+                            {% endif %}
+                        </div>
+                        <!-- End of Tab Config-->
+                    </div>
+                    <!-- End of Tab Content-->
+                </div>
+                <!-- End of Panel Body-->
+            </div>
+            <!--End of Asset Panel-->
+        </div>
+    </div>
+    {% else %}
+        <p><strong>资产不存在</strong></p>
+    {% endif %}
+{% endblock %}
+
+{% block asset_bottom_js %}
+    <script src="{% static 'plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}" ></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var date_list = [];
+        $("#event_log_list").DataTable();
+        $('.form-datetime').datetimepicker({
+            minView: "month",
+            language: 'zh-CN',
+            autoclose:true,
+            format: 'yyyy-mm-dd',
+            todayBtn: true
+        }).on('show', function () {
+            date_list.push($(this).val());
+        }).on('hide', function () {
+            if($('#id_trade_date').val()&&$('#id_expire_date').val()){
+                var res = CheckDate();
+                if (!res){
+                    $(this).val(date_list.pop());
+                    alert('购买日期必须小于过保日期');
+                }
+            }
+        });
+    });
+    function CheckDate() {
+        var trade_date = new Date($('#id_trade_date').val());
+        var expire_date = new Date($('#id_expire_date').val());
+        return trade_date < expire_date
+    }
+
+    {% if form.errors or second_form.errors %}
+        (function JumpToTabConfig() {
+            $("#tab-config").addClass('active in');
+            $("#tab-asset-info").removeClass('active in');
+            $(".nav-tabs a[href='#tab-config']").attr('aria-expanded', true).parent().addClass('active');
+            $(".nav-tabs a[href='#tab-asset-info']").attr('aria-expanded', false).parent().removeClass('active');
+        }());
+    {% endif %}
+
+    </script>
+
+{% endblock %}
